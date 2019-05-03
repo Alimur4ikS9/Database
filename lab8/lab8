@@ -1,0 +1,53 @@
+CREATE TABLE salesman(
+	salesman_id int,
+	name character varying(50),
+	city character varying(50),
+	comission double 
+);
+
+CREATE TABLE customers(
+	customers_id int,
+	cust_name character varying(50),
+	city character varying(50),
+	grade int,
+	salesman_id int,
+	FOREIGN KEY salesman_id REFERENCES salesman(salesman_id)
+);
+
+CREATE TABLE orders(
+	ord_no int,
+	purch_amt double,
+	ord_date date,
+	customer_id int FOREIGN KEY REFERENCES customers(customers_id),
+	salesman_id int FOREIGN KEY REFERENCES salesman(salesman_id)
+);
+
+CREATE ROLE junior_dev LOGIN;
+
+CREATE VIEW newyorksalesmen AS
+	SELECT * FROM salesman WHERE city = 'New York';
+	
+CREATE VIEW nameorders AS 
+	SELECT ord_no, a.salesman_id, name, cust_name
+	FROM orders a, salesman b, customer c
+	WHERE a.salesman_id = b.salesman_id
+	AND a.customer_id = c.customer_id;
+	
+CREATE VIEW highestgrade AS 
+	SELECT * FROM customer
+  	WHERE grade =
+    (SELECT MAX (grade) FROM customers);
+	
+CREATE VIEW citynumber AS 
+	SELECT city, COUNT (DISTINCT salesman_id)
+	FROM salesman
+	GROUP BY city;
+
+CREATE VIEW mcustomer AS 
+	SELECT * FROM salesman s
+	WHERE 1 < (SELECT COUNT(*)
+    	FROM customer c
+     	WHERE s.salesman_id = c.salesman_id);
+		
+CREATE ROLE intern;
+	GRANT junior_dev TO intern;

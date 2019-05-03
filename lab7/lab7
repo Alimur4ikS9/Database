@@ -1,0 +1,12 @@
+CREATE INDEX countries ON countries (name); 
+
+CREATE INDEX employees ON employees (name, surname);
+
+CREATE UNIQUE INDEX employees_2 ON employees (salary);
+
+CREATE INDEX substr ON employees (substring(name 1 for 4)); 
+
+CREATE INDEX join1 ON employees (department_id)
+CREATE INDEX join2 ON employees (salary)
+CREATE INDEX join3 ON department (department_id)
+CREATE INDEX join4 ON department (budget)

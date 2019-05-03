@@ -1,0 +1,35 @@
+CREATE TABLE salesman(
+salesman_id integer PRIMARY KEY,
+name varchar(255),
+city varchar(255),
+commission real
+);
+
+CREATE TABLE customers(
+customer_id integer PRIMARY KEY,
+cust_name varchar(255),
+city varchar(255),
+grade integer,
+salesman_id integer REFERENCES salesman
+);
+
+CREATE TABLE orders(
+ord_no integer PRIMARY KEY,
+purch_amt real,
+ord_date date,
+customer_id integer REFERENCES customers,
+saleaman_id integer REFERENCES salesman
+);
+
+CREATE ROLE junior_dev LOGIN;
+CREATE VIEW salesman_newyork AS SELECT * FROM salesman WHERE city = 'New York';
+CREATE MATERIALIZED VIEW orders_view AS SELECT orders.ord_no, salesman.name, customers.cust_name FROM orders 
+JOIN customers ON ((orders.customer_id = customers.customer_id))
+JOIN saleman ON ((salesman.salesman_id = customers.salesman_id))
+GROUP BY orders.ord_no;
+CREATE VIEW highest_grade AS SELECT * FROM customers WHERE grade = (SELECT max(grade) FROM customers);
+grant all privileges on highest_grade to junior_dev;
+create view show_s as select count(salesman_id),  city from salesman group by city;
+create view show_c as select salesman_id from customers group by salesman_id having count(customer_id) > 1;
+CREATE ROLE intern;
+GRANT junior_dev to intern;

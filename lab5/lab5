@@ -1,0 +1,58 @@
+CREATE TABLE customers(
+	customer_id integer NOT NULL PRIMARY KEY, 
+	cust_name character varying(255) NOT NULL, 
+	city character varying(255) NOT NULL,
+	grade integer NOT NULL, 
+	salesman_id integer NOT NULL
+);
+
+INSERT INTO customers (customer_id, cust_name, city, grade, salesman_id) 
+	VALUES (3002, 'Nick Rimando', 'New York', 100, 5001), 
+	(3005, 'Graham Zusi',	'California',	200, 5002),
+	(3001, 'Brad Guzan',	'London', 400, 5005),
+	(3007, 'Brad Davis',	'New York',	200, 5001),
+	(3004, 'Fabian Johnson',  'Paris', 300, 5006);
+	
+SELECT * FROM customers WHERE grade > 100;
+
+SELECT * FROM customers WHERE city = 'New York' AND grade > 100;
+
+SELECT * FROM customers WHERE city = 'New York' OR grade > 100;
+
+SELECT * FROM customers WHERE city = 'Paris' OR city = 'Rome';
+
+SELECT * FROM customers WHERE cust_name LIKE 'B%';
+
+CREATE TABLE orders(
+	order_id serial NOT NULL PRIMARY KEY,
+	customer_id integer NOT NULL,
+	description text NOT NULL,
+	purch_amt integer NOT NULL,
+	CONSTRAINT Costumer_ID FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+INSERT INTO orders(order_id, customer_id, description, purch_amt)
+	VALUES(01, 3002, 'coffee', 11),
+	(02, 3005, 'milk', 9),
+	(03, 3001, 'chocolate', 20);
+	
+SELECT * FROM orders 
+	WHERE customer_id IN 
+		(SELECT customer_id FROM customers WHERE city = 'New York');
+
+SELECT * FROM orders 
+	WHERE purch_amt > 10;
+	
+SELECT SUM(purch_amt) FROM orders;
+
+SELECT AVG(purch_amt) FROM orders;
+
+SELECT * FROM customers
+	WHERE EXISTS (SELECT cust_name from customers);
+	
+SELECT MAX(purch_amt) FROM orders;
+
+
+
+
+	
